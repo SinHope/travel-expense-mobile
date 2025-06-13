@@ -1,6 +1,7 @@
 // app/(tabs)/add-trip/index.tsx
 import React, { useState } from 'react';
-import { Alert, Button, StyleSheet, Text, TextInput, View } from 'react-native';
+import { Alert, Button, StyleSheet, TextInput, View } from 'react-native';
+import { Text } from "../../../components/nativewindui/Text";
 import API_BASE_URL from '../../../constants/api';
 
 export default function AddTripScreen() {
