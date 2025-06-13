@@ -8,11 +8,11 @@ import {
   Button,
   Platform,
   StyleSheet,
-  Text,
   TextInput,
   TouchableOpacity,
   View
 } from "react-native";
+import { Text } from "../../components/nativewindui/Text";
 
 export default function EditTripScreen() {
   const { id } = useLocalSearchParams();

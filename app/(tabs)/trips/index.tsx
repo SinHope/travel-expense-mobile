@@ -6,10 +6,10 @@ import {
   Alert,
   FlatList,
   StyleSheet,
-  Text,
   TouchableOpacity,
   View
 } from 'react-native';
+import { Text } from "../../../components/nativewindui/Text";
 
 
 import API_BASE_URL from "../../../constants/api";

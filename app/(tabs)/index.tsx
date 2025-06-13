@@ -1,5 +1,6 @@
 // app/index.tsx
-import { StyleSheet, Text, View } from "react-native";
+import { StyleSheet, View } from "react-native";
+import { Text } from "../../components/nativewindui/Text";
 
 export default function HomeScreen() {
   return (
