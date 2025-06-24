@@ -3,16 +3,15 @@ import { useRouter } from "expo-router";
 import React, { useState } from "react";
 import { Alert, Button, StyleSheet, TextInput, View } from "react-native";
 import Toast from "react-native-toast-message";
+import { DatePicker } from "../../../components/nativewindui/DatePicker";
 import { Text } from "../../../components/nativewindui/Text";
 import API_BASE_URL from "../../../constants/api";
 
 export default function AddTripScreen() {
   const [destination, setDestination] = useState("");
-  const [date, setDate] = useState("");
+  const [date, setDate] = useState<Date>(new Date());
   const [budget, setBudget] = useState("");
   const router = useRouter();
-
-  
 
   const handleSubmit = async () => {
     if (!destination || !date || !budget) {
@@ -37,7 +36,7 @@ export default function AddTripScreen() {
         });
         router.replace("/(tabs)/trips");
         setDestination("");
-        setDate("");  
+        setDate("");
         setBudget("");
       } else {
         Alert.alert("Error", result.message || "Something went wrong.");
@@ -59,12 +58,15 @@ export default function AddTripScreen() {
       />
 
       <Text style={styles.label}>Date</Text>
-      <TextInput
-        style={styles.input}
+      <DatePicker
         value={date}
-        onChangeText={setDate}
-        placeholder="YYYY-MM-DD"
+        mode="date"
+        onChange={(ev) => {
+          const newDate = new Date(ev.nativeEvent.timestamp);
+          setDate(newDate);
+        }}
       />
+      <Text style={{ marginTop: 8 }}>{date.toISOString().split("T")[0]}</Text>
 
       <Text style={styles.label}>Budget (SGD)</Text>
       <TextInput
