@@ -1,41 +1,50 @@
 // app/(tabs)/add-trip/index.tsx
-import React, { useState } from 'react';
-import { Alert, Button, StyleSheet, TextInput, View } from 'react-native';
+import { useRouter } from "expo-router";
+import React, { useState } from "react";
+import { Alert, Button, StyleSheet, TextInput, View } from "react-native";
+import Toast from "react-native-toast-message";
 import { Text } from "../../../components/nativewindui/Text";
-import API_BASE_URL from '../../../constants/api';
+import API_BASE_URL from "../../../constants/api";
 
 export default function AddTripScreen() {
-  const [destination, setDestination] = useState('');
-  const [date, setDate] = useState('');
-  const [budget, setBudget] = useState('');
+  const [destination, setDestination] = useState("");
+  const [date, setDate] = useState("");
+  const [budget, setBudget] = useState("");
+  const router = useRouter();
+
+  
 
   const handleSubmit = async () => {
     if (!destination || !date || !budget) {
-      Alert.alert('Error', 'Please fill in all fields.');
+      Alert.alert("Error", "Please fill in all fields.");
       return;
     }
 
     try {
       const response = await fetch(`${API_BASE_URL}/api/trips`, {
-        method: 'POST',
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         body: JSON.stringify({ destination, date, budget: parseFloat(budget) }),
       });
 
       const result = await response.json();
       if (response.ok) {
-        Alert.alert('Success', 'Trip added successfully!');
-        setDestination('');
-        setDate('');
-        setBudget('');
+        Toast.show({
+          type: "success",
+          text1: "Trip Added!",
+        });
+        router.replace("/(tabs)/trips");
+        setDestination("");
+        setDate("");  
+        setBudget("");
       } else {
-        Alert.alert('Error', result.message || 'Something went wrong.');
+        Alert.alert("Error", result.message || "Something went wrong.");
       }
     } catch (error) {
       console.error(error);
-      Alert.alert('Error', 'Failed to add trip.');
+      Alert.alert("Error", "Failed to add trip.");
     }
   };
 
@@ -75,15 +84,15 @@ const styles = StyleSheet.create({
   container: {
     padding: 20,
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: "#fff",
   },
   label: {
-    fontWeight: 'bold',
+    fontWeight: "bold",
     marginTop: 12,
   },
   input: {
     borderWidth: 1,
-    borderColor: '#ccc',
+    borderColor: "#ccc",
     borderRadius: 8,
     padding: 10,
     marginTop: 4,

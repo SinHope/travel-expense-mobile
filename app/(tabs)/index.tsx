@@ -5,8 +5,8 @@ import { Text } from "../../components/nativewindui/Text";
 export default function HomeScreen() {
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>📍 All Trips</Text>
-      <Text style={styles.sub}>This will show your trip list</Text>
+      <Text style={styles.title}>📍 Travel Expense Buddy</Text>
+      <Text style={styles.sub}>Responsible buddy tracking your trips for you</Text>
     </View>
   );
 }
@@ -22,6 +22,7 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 26,
     fontWeight: "bold",
+    color: "#777"
   },
   sub: {
     fontSize: 16,

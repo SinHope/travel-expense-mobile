@@ -1,19 +1,19 @@
 // app/(tabs)/trips/index.tsx
-import { useRouter } from 'expo-router';
-import React, { useEffect, useState } from "react";
+import { useFocusEffect } from "@react-navigation/native";
+import { useRouter } from "expo-router";
+import React, { useCallback, useState } from "react";
 import {
   ActivityIndicator,
   Alert,
   FlatList,
   StyleSheet,
   TouchableOpacity,
-  View
-} from 'react-native';
+  View,
+} from "react-native";
 import { Text } from "../../../components/nativewindui/Text";
-
+import { ThemeToggle } from "../../../components/nativewindui/ThemeToggle";
 
 import API_BASE_URL from "../../../constants/api";
-
 
 export default function TripsScreen() {
   const router = useRouter();
@@ -45,9 +45,11 @@ export default function TripsScreen() {
     }
   };
 
-  useEffect(() => {
-    fetchTrips();
-  }, []);
+  useFocusEffect(
+    useCallback(() => {
+      fetchTrips();
+    }, [])
+  );
 
   if (loading) {
     return (
@@ -59,13 +61,19 @@ export default function TripsScreen() {
 
   return (
     <View style={styles.container}>
+      {/* Add ThemeToggle button here */}
+      <View style={{ alignItems: "flex-end", marginBottom: 10 }}>
+        <ThemeToggle />
+      </View>
+
       <Text style={styles.heading}>All Trips</Text>
+
       <FlatList
         data={trips}
         keyExtractor={(item) => item._id}
         renderItem={({ item }) => (
-          <View style={styles.card}>
-            <Text style={styles.title}>
+          <View className="bg-card border border-border rounded-xl p-4 mb-4">
+            <Text className="text-foreground font-bold text-base">
               📍 {item.destination || "No title"}
             </Text>
             <Text>📅 {item.date || "No date"}</Text>
@@ -111,15 +119,15 @@ const styles = StyleSheet.create({
     textAlign: "center",
   },
   editButton: {
-    backgroundColor: '#007bff',
+    backgroundColor: "#007bff",
     padding: 10,
     marginTop: 10,
     borderRadius: 8,
   },
   editText: {
-    color: 'white',
-    textAlign: 'center',
-    fontWeight: 'bold',
+    color: "white",
+    textAlign: "center",
+    fontWeight: "bold",
   },
   center: { flex: 1, justifyContent: "center", alignItems: "center" },
 });

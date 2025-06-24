@@ -1,8 +1,8 @@
-import { VariantProps, cva } from 'class-variance-authority';
-import * as React from 'react';
-import { Text as RNText } from 'react-native';
+import { VariantProps, cva } from "class-variance-authority";
+import * as React from "react";
+import { Text as RNText } from "react-native";
 
-import { cn } from '~/lib/cn';
+import { cn } from "../../lib/cn";
 
 const textVariants = cva('text-foreground', {
   variants: {
@@ -47,3 +47,4 @@ function Text({
 }
 
 export { Text, TextClassContext, textVariants };
+

@@ -3,6 +3,7 @@ import { ThemeProvider as NavThemeProvider } from '@react-navigation/native';
 import "expo-dev-client";
 import { Slot } from "expo-router";
 import { StatusBar } from 'expo-status-bar';
+import Toast from 'react-native-toast-message';
 import "../global.css";
 import { useColorScheme, useInitialAndroidBarSync } from "../lib/useColorScheme";
 import { NAV_THEME } from '../theme/index';
@@ -24,9 +25,11 @@ export default function RootLayout() {
         style={isDarkColorScheme ? 'light' : 'dark'}
       />
 
-      <NavThemeProvider value={NAV_THEME[colorScheme]}>
+      <NavThemeProvider value={NAV_THEME[colorScheme]}> 
       <Slot />
       </NavThemeProvider>
+
+      <Toast /> 
     </>
   );
 }
