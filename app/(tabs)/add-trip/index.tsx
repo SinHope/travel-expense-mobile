@@ -1,6 +1,7 @@
 // app/(tabs)/add-trip/index.tsx
 import { useRouter } from "expo-router";
-import React, { useState } from "react";
+import { useColorScheme } from "nativewind";
+import { useState } from "react";
 import { Alert, Button, StyleSheet, TextInput, View } from "react-native";
 import Toast from "react-native-toast-message";
 import { DatePicker } from "../../../components/nativewindui/DatePicker";
@@ -11,6 +12,8 @@ export default function AddTripScreen() {
   const [destination, setDestination] = useState("");
   const [date, setDate] = useState<Date>(new Date());
   const [budget, setBudget] = useState("");
+  const { colorScheme } = useColorScheme();
+  const isDark = colorScheme === "dark";
   const router = useRouter();
 
   const handleSubmit = async () => {
@@ -36,7 +39,7 @@ export default function AddTripScreen() {
         });
         router.replace("/(tabs)/trips");
         setDestination("");
-        setDate("");
+        setDate(new Date());
         setBudget("");
       } else {
         Alert.alert("Error", result.message || "Something went wrong.");
@@ -48,36 +51,65 @@ export default function AddTripScreen() {
   };
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.label}>Destination</Text>
+    <View
+      style={[styles.container, { backgroundColor: isDark ? "#000" : "#fff" }]}
+    >
+      <Text style={[styles.label, { color: isDark ? "#fff" : "#000" }]}>
+        Destination
+      </Text>
       <TextInput
-        style={styles.input}
+        style={[
+          styles.input,
+          {
+            backgroundColor: isDark ? "#1a1a1a" : "#fff",
+            color: isDark ? "#fff" : "#000",
+            borderColor: isDark ? "#555" : "#ccc",
+          },
+        ]}
         value={destination}
         onChangeText={setDestination}
         placeholder="e.g. Batam"
+        placeholderTextColor={isDark ? "#aaa" : "#888"}
       />
 
-      <Text style={styles.label}>Date</Text>
+      <Text style={[styles.label, { color: isDark ? "#fff" : "#000" }]}>
+        Date
+      </Text>
       <DatePicker
         value={date}
         mode="date"
         onChange={(ev) => {
           const newDate = new Date(ev.nativeEvent.timestamp);
           setDate(newDate);
+          console.log(newDate);
         }}
       />
-      <Text style={{ marginTop: 8 }}>{date.toISOString().split("T")[0]}</Text>
+      <Text style={{ marginTop: 8, color: isDark ? "#fff" : "#000" }}>
+        {date.toISOString().split("T")[0]}
+      </Text>
 
-      <Text style={styles.label}>Budget (SGD)</Text>
+      <Text style={[styles.label, { color: isDark ? "#fff" : "#000" }]}>
+        Budget (SGD)
+      </Text>
       <TextInput
-        style={styles.input}
+        style={[
+          styles.input,
+          {
+            backgroundColor: isDark ? "#1a1a1a" : "#fff",
+            color: isDark ? "#fff" : "#000",
+            borderColor: isDark ? "#555" : "#ccc",
+          },
+        ]}
         value={budget}
         onChangeText={setBudget}
         placeholder="e.g. 150"
+        placeholderTextColor={isDark ? "#aaa" : "#888"}
         keyboardType="numeric"
       />
 
-      <Button title="Add Trip" onPress={handleSubmit} />
+      <View style={{ marginTop: 20 }}>
+        <Button title="Add Trip" onPress={handleSubmit} color={isDark ? "#1e90ff" : "#007aff"} />
+      </View>
     </View>
   );
 }
@@ -86,7 +118,6 @@ const styles = StyleSheet.create({
   container: {
     padding: 20,
     flex: 1,
-    backgroundColor: "#fff",
   },
   label: {
     fontWeight: "bold",
@@ -94,7 +125,6 @@ const styles = StyleSheet.create({
   },
   input: {
     borderWidth: 1,
-    borderColor: "#ccc",
     borderRadius: 8,
     padding: 10,
     marginTop: 4,

@@ -1,26 +1,24 @@
-// app/(tabs)/trips/index.tsx
 import { useFocusEffect } from "@react-navigation/native";
 import { useRouter } from "expo-router";
-import React, { useCallback, useState } from "react";
+import { useCallback, useState } from "react";
 import {
   ActivityIndicator,
   Alert,
   FlatList,
   StyleSheet,
+  TextInput,
   TouchableOpacity,
   View,
 } from "react-native";
 import { Text } from "../../../components/nativewindui/Text";
-import { ThemeToggle } from "../../../components/nativewindui/ThemeToggle";
-
 import API_BASE_URL from "../../../constants/api";
 
 export default function TripsScreen() {
   const router = useRouter();
   const [trips, setTrips] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [date, setDate] = useState(new Date());
-  const [showPicker, setShowPicker] = useState(false);
+  const [sortOrder, setSortOrder] = useState<"newest" | "oldest">("newest");
+  const [filterText, setFilterText] = useState("");
 
   const fetchTrips = async () => {
     try {
@@ -51,6 +49,12 @@ export default function TripsScreen() {
     }, [])
   );
 
+  const sortedTrips = [...trips].sort((a, b) => {
+    const dateA = new Date(a.date).getTime();
+    const dateB = new Date(b.date).getTime();
+    return sortOrder === "newest" ? dateB - dateA : dateA - dateB;
+  });
+
   if (loading) {
     return (
       <View style={styles.center}>
@@ -61,22 +65,86 @@ export default function TripsScreen() {
 
   return (
     <View style={styles.container}>
-      {/* Add ThemeToggle button here */}
-      <View style={{ alignItems: "flex-end", marginBottom: 10 }}>
-        <ThemeToggle />
-      </View>
-
       <Text style={styles.heading}>All Trips</Text>
 
+      {/* Sort Buttons */}
+      <View style={styles.sortRow}>
+        <TouchableOpacity
+          onPress={() => setSortOrder("newest")}
+          style={[
+            styles.sortButton,
+            { backgroundColor: sortOrder === "newest" ? "#007bff" : "#ccc" },
+          ]}
+        >
+          <Text style={styles.sortButtonText}>Newest</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity
+          onPress={() => setSortOrder("oldest")}
+          style={[
+            styles.sortButton,
+            { backgroundColor: sortOrder === "oldest" ? "#007bff" : "#ccc" },
+          ]}
+        >
+          <Text style={styles.sortButtonText}>Oldest</Text>
+        </TouchableOpacity>
+      </View>
+
+      <View style={{ position: "relative", marginBottom: 12 }}>
+        <TextInput
+          placeholder="Search by destination..."
+          value={filterText}
+          onChangeText={setFilterText}
+          style={{
+            borderWidth: 1,
+            borderColor: "#ccc",
+            borderRadius: 8,
+            padding: 10,
+            paddingRight: 35, // make space for the clear button
+            backgroundColor: "#fff", // add dark mode if needed
+          }}
+        />
+
+        {filterText.length > 0 && (
+          <TouchableOpacity
+            onPress={() => setFilterText("")}
+            style={{
+              position: "absolute",
+              right: 10,
+              top: "30%",
+              backgroundColor: "#ccc",
+              borderRadius: 12,
+              paddingHorizontal: 5,
+              paddingVertical: 2,
+            }}
+          >
+            <Text style={{ fontSize: 12 }}>❌</Text>
+          </TouchableOpacity>
+        )}
+      </View>
+
+      {/* Trip List */}
       <FlatList
-        data={trips}
+        data={sortedTrips.filter((trip) =>
+          trip.destination?.toLowerCase().includes(filterText.toLowerCase())
+        )}
         keyExtractor={(item) => item._id}
         renderItem={({ item }) => (
           <View className="bg-card border border-border rounded-xl p-4 mb-4">
             <Text className="text-foreground font-bold text-base">
               📍 {item.destination || "No title"}
             </Text>
-            <Text>📅 {item.date || "No date"}</Text>
+            <Text>
+              📅{" "}
+              {(() => {
+                const d = new Date(item.date);
+                if (isNaN(d.getTime())) return "Invalid date";
+                const day = d.getDate().toString().padStart(2, "0");
+                const month = (d.getMonth() + 1).toString().padStart(2, "0");
+                const year = d.getFullYear();
+                return `${day}-${month}-${year}`;
+              })()}
+            </Text>
             <Text>💰 ${item.budget ?? 0}</Text>
 
             <TouchableOpacity
@@ -86,7 +154,10 @@ export default function TripsScreen() {
               <Text style={styles.deleteText}>Delete</Text>
             </TouchableOpacity>
             <TouchableOpacity
-              onPress={() => router.push(`/edit-trip/${item._id}`)}
+              onPress={() => {
+                console.log("🟢 Edit Trip ID:", item._id);
+                router.push(`/edit-trip/${item._id}`);
+              }}
               style={styles.editButton}
             >
               <Text style={styles.editText}>Edit</Text>
@@ -101,13 +172,22 @@ export default function TripsScreen() {
 const styles = StyleSheet.create({
   container: { padding: 20, flex: 1 },
   heading: { fontSize: 22, fontWeight: "bold", marginBottom: 10 },
-  card: {
-    backgroundColor: "#f0f0f0",
-    padding: 15,
-    borderRadius: 10,
+  sortRow: {
+    flexDirection: "row",
+    justifyContent: "space-between",
     marginBottom: 10,
   },
-  title: { fontWeight: "bold", fontSize: 16 },
+  sortButton: {
+    flex: 1,
+    marginHorizontal: 5,
+    paddingVertical: 8,
+    borderRadius: 6,
+  },
+  sortButtonText: {
+    color: "white",
+    textAlign: "center",
+    fontWeight: "bold",
+  },
   deleteButton: {
     marginTop: 8,
     backgroundColor: "red",

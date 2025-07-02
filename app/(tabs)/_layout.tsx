@@ -5,8 +5,8 @@ export default function TabsLayout() {
   return (
     <Tabs>
       <Tabs.Screen name="index" options={{ title: "Home" }} />
-      <Tabs.Screen name="trips" options={{ title: "Trips" }} />
-      <Tabs.Screen name="add-trip" options={{ title: "Add Trip" }} />
+      <Tabs.Screen name="trips/index" options={{ title: "My Trips" }} />
+      <Tabs.Screen name="add-trip/index" options={{ title: "Add Trip" }} />
     </Tabs>
   );
 }

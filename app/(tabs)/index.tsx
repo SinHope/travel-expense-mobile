@@ -1,12 +1,35 @@
 // app/index.tsx
+import { useColorScheme } from "nativewind";
 import { StyleSheet, View } from "react-native";
 import { Text } from "../../components/nativewindui/Text";
+import { ThemeToggle } from "../../components/nativewindui/ThemeToggle";
 
 export default function HomeScreen() {
+  const { colorScheme } = useColorScheme();
+  const isDark = colorScheme === "dark";
+
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>📍 Travel Expense Buddy</Text>
-      <Text style={styles.sub}>Responsible buddy tracking your trips for you</Text>
+    <View
+      style={[
+        styles.container,
+        { backgroundColor: isDark ? "#000" : "#fff" },
+      ]}
+    >
+      <View style={styles.toggleContainer}>
+        <ThemeToggle />
+      </View>
+
+      <Text
+        style={[styles.title, { color: isDark ? "#fff" : "#333" }]}
+      >
+        📍 Travel Expense Buddy
+      </Text>
+
+      <Text
+        style={[styles.sub, { color: isDark ? "#ccc" : "#777" }]}
+      >
+        Responsible buddy tracking your trips for you
+      </Text>
     </View>
   );
 }
@@ -14,19 +37,21 @@ export default function HomeScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#fff", // Will override with dark mode later
     alignItems: "center",
     justifyContent: "center",
     padding: 20,
   },
+  toggleContainer: {
+    position: "absolute",
+    top: 50,
+    right: 20,
+  },
   title: {
     fontSize: 26,
     fontWeight: "bold",
-    color: "#777"
   },
   sub: {
     fontSize: 16,
     marginTop: 10,
-    color: "#777",
   },
 });
